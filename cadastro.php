@@ -83,8 +83,8 @@ if (mysqli_stmt_num_rows($stmt_verifica) > 0) {
 mysqli_stmt_close($stmt_verifica);
 
 
-// ALTERADO: Inserir o novo funcionário na tabela 'Tb_Funcionario' com os novos campos
-$sql_insere = "INSERT INTO Tb_Funcionario (n_registro, nome_funcionario, data_admissao, cargo, qtde_salarios, salario_bruto, inss, salario_liquido) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+$sql_insere = "INSERT INTO Lista_Usuarios (n_registro, nome_funcionario, data_admissao, cargo, qtde_salarios, salario_bruto, inss, salario_liquido) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 $stmt_insere = mysqli_prepare($conexao, $sql_insere);
 
 // ALTERADO: Usa as novas variáveis e a string de tipo "isssdddd"
