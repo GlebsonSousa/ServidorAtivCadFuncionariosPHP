@@ -67,8 +67,8 @@ if (empty($n_registro) || empty($nome_funcionario)) {
     exit();
 }
 
-// ALTERADO: Verifica duplicatas na tabela 'Tb_Funcionario'
-$sql_verifica = "SELECT n_registro FROM Tb_Funcionario WHERE n_registro = ?";
+// ALTERADO: Verifica duplicatas na tabela 'Lista_Usuarios'
+$sql_verifica = "SELECT n_registro FROM Lista_Usuarios WHERE n_registro = ?";
 $stmt_verifica = mysqli_prepare($conexao, $sql_verifica);
 mysqli_stmt_bind_param($stmt_verifica, "i", $n_registro);
 mysqli_stmt_execute($stmt_verifica);
