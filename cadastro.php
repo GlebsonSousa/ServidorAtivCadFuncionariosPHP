@@ -23,7 +23,7 @@ $cargo = isset($_POST['cargo']) ? trim($_POST['cargo']) : '';
 $data_admissao_br = isset($_POST['data_admissao']) ? trim($_POST['data_admissao']) : null;
 
 // Nome da variável alterado para maior clareza
-$qtd_salarios_str = isset($_POST['qtd_salarios_minimos']) ? trim($_POST['qtd_salarios_minimos']) : '0';
+$qtd_salarios_str = isset($_POST['qtd_salarios_minimos']) ? trim($_POST['salario']) : '0';
 
 // --- 2. CÁLCULOS DOS VALORES (LÓGICA REVISADA) ---
 define('SALARIO_MINIMO', 1412.00);
