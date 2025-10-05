@@ -17,7 +17,7 @@ if (empty($termo_busca)) {
 }
 
 // Prepara a query SQL para buscar por nome OU por número de registro
-$sql = "SELECT n_registro, nome_funcionario, data_admissao, cargo, salario FROM Lista_Usuarios WHERE nome_funcionario LIKE ? OR n_registro = ?";
+$sql = "SELECT n_registro, nome_funcionario, data_admissao, cargo, salario, inss, salario_liquido FROM Lista_Usuarios WHERE nome_funcionario LIKE ? OR n_registro = ?";
 $stmt = mysqli_prepare($conexao, $sql);
 
 // MODIFICAÇÃO PRINCIPAL:

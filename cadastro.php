@@ -25,21 +25,16 @@ $data_admissao_br = isset($_POST['data_admissao']) ? trim($_POST['data_admissao'
 $valor_base_salario_str = (!empty($_POST['salario'])) ? trim($_POST['salario']) : '0';
 
 
-// --- NORMALIZAÇÃO DA DATA ---
+// --- NORMALIZAÇÃO DA DATA (SE O JS ENVIAR 'Y-m-d') ---
 $data_admissao_mysql = null;
 if (!empty($data_admissao_br)) {
-    // O formato da data que você enviou (05/09/2025) é 'd/m/Y'
-    $date_obj = DateTime::createFromFormat('d/m/Y', $data_admissao_br);
+    // Se o JS enviar no formato padrão de input type="date" (Y-m-d)
+    $date_obj = DateTime::createFromFormat('Y-m-d', $data_admissao_br);
     if ($date_obj) {
         $data_admissao_mysql = $date_obj->format('Y-m-d');
     }
 }
-if ($data_admissao_mysql === null) {
-    // Se a data for inválida ou não enviada, usa a data de hoje.
-    $timezone = new DateTimeZone('America/Sao_Paulo');
-    $data_admissao_mysql = (new DateTime('now', $timezone))->format('Y-m-d');
-}
-
+// ... restante do código
 
 // --- 2. CÁLCULOS DOS VALORES ---
 define('SALARIO_MINIMO', 1412.00);
@@ -51,11 +46,9 @@ $salario_bruto = 0.0;
 $inss = 0.0;
 $salario_liquido = 0.0;
 
-// O valor que chega é a quantidade de salários mínimos (ex: 2) ou o salário bruto direto?
-// VOU ASSUMIR QUE O VALOR '2' É A QUANTIDADE DE SALÁRIOS, como nos exemplos anteriores.
 if ($valor_base_float > 0) {
     // Multiplica o valor recebido (2) pelo salário mínimo para obter o bruto
-    $salario_bruto = $valor_base_float * SALARIO_MINIMO;
+    $salario_bruto = $valor_base_float * SALARIO_MINIMO;ALÁRIOS, como nos exemplos anteriores.
 
     if ($salario_bruto > 1550.00) {
         $inss = $salario_bruto * 0.11;
