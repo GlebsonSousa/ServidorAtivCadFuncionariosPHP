@@ -16,12 +16,10 @@ $n_registro = isset($_POST['n_registro']) ? trim($_POST['n_registro']) : null;
 $nome_funcionario = isset($_POST['nome_funcionario']) ? trim($_POST['nome_funcionario']) : '';
 $cargo = isset($_POST['cargo']) ? trim($_POST['cargo']) : '';
 $data_admissao_br = isset($_POST['data_admissao']) ? trim($_POST['data_admissao']) : null;
-
 $valor_base_salario_str = (!empty($_POST['salario'])) ? trim($_POST['salario']) : '0';
 
 $data_admissao_mysql = null;
 if (!empty($data_admissao_br)) {
-
     $date_obj = DateTime::createFromFormat('Y-m-d', $data_admissao_br);
     if ($date_obj) {
         $data_admissao_mysql = $date_obj->format('Y-m-d');
@@ -29,7 +27,6 @@ if (!empty($data_admissao_br)) {
 }
 
 define('SALARIO_MINIMO', 1412.00);
-
 $valor_base_float = (float)str_replace(',', '.', $valor_base_salario_str);
 
 $salario_bruto = 0.0;
@@ -37,8 +34,7 @@ $inss = 0.0;
 $salario_liquido = 0.0;
 
 if ($valor_base_float > 0) {
-    $salario_bruto = $valor_base_float * SALARIO_MINIMO;ALÁRIOS, como nos exemplos anteriores.
-
+    $salario_bruto = $valor_base_float * SALARIO_MINIMO;
     if ($salario_bruto > 1550.00) {
         $inss = $salario_bruto * 0.11;
     }
@@ -65,10 +61,8 @@ if (mysqli_stmt_num_rows($stmt_verifica) > 0) {
 }
 mysqli_stmt_close($stmt_verifica);
 
-
 $sql_insere = "INSERT INTO Lista_Usuarios (n_registro, nome_funcionario, data_admissao, cargo, salario, inss, salario_liquido) VALUES (?, ?, ?, ?, ?, ?, ?)";
 $stmt_insere = mysqli_prepare($conexao, $sql_insere);
-
 mysqli_stmt_bind_param($stmt_insere, "isssddd", $n_registro, $nome_funcionario, $data_admissao_mysql, $cargo, $salario_bruto, $inss, $salario_liquido);
 
 if (mysqli_stmt_execute($stmt_insere)) {
@@ -81,4 +75,5 @@ if (mysqli_stmt_execute($stmt_insere)) {
 
 mysqli_stmt_close($stmt_insere);
 mysqli_close($conexao);
+
 ?>
