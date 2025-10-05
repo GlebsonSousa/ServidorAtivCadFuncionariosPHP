@@ -1,5 +1,5 @@
 <?php
-// ARQUIVO: cadastrar_funcionario.php (Versão Corrigida)
+// ARQUIVO: cadastrar_funcionario.php (Versão com Correção Definitiva)
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
@@ -18,43 +18,39 @@ $n_registro = isset($_POST['n_registro']) ? trim($_POST['n_registro']) : null;
 $nome_funcionario = isset($_POST['nome_funcionario']) ? trim($_POST['nome_funcionario']) : '';
 $cargo = isset($_POST['cargo']) ? trim($_POST['cargo']) : '';
 $data_admissao_br = isset($_POST['data_admissao']) ? trim($_POST['data_admissao']) : null;
-$qtd_salarios_minimos_str = isset($_POST['qtd_salarios_minimos']) ? trim($_POST['qtd_salarios_minimos_str']) : null;
+
+// Nome da variável alterado para maior clareza
+$qtd_salarios_str = isset($_POST['qtd_salarios_minimos']) ? trim($_POST['qtd_salarios_minimos']) : '0';
+
+// --- 2. CÁLCULOS DOS VALORES (LÓGICA REVISADA) ---
+define('SALARIO_MINIMO', 1412.00);
 
 // Normaliza a entrada para float (troca vírgula por ponto)
-$qtd_salarios_float = null;
-if ($qtd_salarios_minimos_str) {
-    $qtd_salarios_float = (float)str_replace(',', '.', $qtd_salarios_minimos_str);
-}
+// Se a string estiver vazia após o trim, considera como 0.
+$qtd_salarios_float = (float)str_replace(',', '.', $qtd_salarios_str);
 
-// Normalização da Data (DD/MM/YYYY para YYYY-MM-DD)
-$data_admissao_mysql = null;
-if ($data_admissao_br) {
-    $date_obj = DateTime::createFromFormat('d/m/Y', $data_admissao_br);
-    if ($date_obj) {
-        $data_admissao_mysql = $date_obj->format('Y-m-d');
-    }
-}
+// CORREÇÃO PRINCIPAL: Inicializa as variáveis com 0.0 em vez de null.
+$salario_bruto = 0.0;
+$inss = 0.0;
+$salario_liquido = 0.0;
 
-// --- 2. CÁLCULOS DOS VALORES ---
-define('SALARIO_MINIMO', 1412.00);
-$salario_bruto = null;
-$inss = null;
-$salario_liquido = null;
-
-if ($qtd_salarios_float !== null && $qtd_salarios_float > 0) {
+// O cálculo só é refeito se a quantidade for realmente maior que zero.
+if ($qtd_salarios_float > 0) {
     // Calcula o salário bruto
     $salario_bruto = $qtd_salarios_float * SALARIO_MINIMO;
 
     // Aplica a regra do imposto INSS
     if ($salario_bruto > 1550.00) {
         $inss = $salario_bruto * 0.11; // Alíquota de 11%
-    } else {
-        $inss = 0.0; // Isenção
     }
+    // Não precisa de 'else { $inss = 0; }' porque já foi inicializado com 0.0
 
     // Calcula o salário líquido
     $salario_liquido = $salario_bruto - $inss;
 }
+// Se a condição 'if' for falsa, as variáveis permanecem 0.0, e não mais null.
+
+// O restante do código permanece o mesmo, pois a validação e a query INSERT estão corretas.
 
 // --- 3. VALIDAÇÃO E INSERÇÃO NO BANCO ---
 if (empty($n_registro) || empty($nome_funcionario)) {
@@ -78,10 +74,11 @@ if (mysqli_stmt_num_rows($stmt_verifica) > 0) {
 }
 mysqli_stmt_close($stmt_verifica);
 
+// A query de inserção já estava correta da última vez
 $sql_insere = "INSERT INTO Lista_Usuarios (n_registro, nome_funcionario, data_admissao, cargo, salario, inss, salario_liquido) VALUES (?, ?, ?, ?, ?, ?, ?)";
 $stmt_insere = mysqli_prepare($conexao, $sql_insere);
 
-// O bind_param foi ajustado para corresponder à nova query: "isssddd"
+// O bind_param também já estava correto
 mysqli_stmt_bind_param($stmt_insere, "isssddd", $n_registro, $nome_funcionario, $data_admissao_mysql, $cargo, $salario_bruto, $inss, $salario_liquido);
 
 if (mysqli_stmt_execute($stmt_insere)) {
@@ -89,7 +86,6 @@ if (mysqli_stmt_execute($stmt_insere)) {
     echo json_encode(['msg' => "Funcionário cadastrado com sucesso!"]);
 } else {
     http_response_code(500); // Internal Server Error
-    // Adiciona o erro do banco para facilitar a depuração
     echo json_encode(['erro' => "Ocorreu um erro no servidor ao cadastrar.", 'db_error' => mysqli_error($conexao)]);
 }
 
