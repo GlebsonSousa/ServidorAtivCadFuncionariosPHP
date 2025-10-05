@@ -1,4 +1,6 @@
 <?php
+// ----- INÍCIO DO ARQUIVO COMPLETO: cadastrar_funcionario.php -----
+
 // ARQUIVO: cadastrar_funcionario.php (Versão com Correção Definitiva)
 
 header("Access-Control-Allow-Origin: *");
@@ -11,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }
 
+// O único arquivo externo necessário é o 'conexao.php'
 require_once 'conexao.php';
 
 // --- 1. RECEBIMENTO E NORMALIZAÇÃO DOS DADOS ---
@@ -50,7 +53,6 @@ if ($qtd_salarios_float > 0) {
 }
 // Se a condição 'if' for falsa, as variáveis permanecem 0.0, e não mais null.
 
-// O restante do código permanece o mesmo, pois a validação e a query INSERT estão corretas.
 
 // --- 3. VALIDAÇÃO E INSERÇÃO NO BANCO ---
 if (empty($n_registro) || empty($nome_funcionario)) {
@@ -91,4 +93,6 @@ if (mysqli_stmt_execute($stmt_insere)) {
 
 mysqli_stmt_close($stmt_insere);
 mysqli_close($conexao);
+
+// ----- FIM DO ARQUIVO COMPLETO -----
 ?>
